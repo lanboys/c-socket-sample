@@ -16,7 +16,9 @@ int main() {
     char *w_buf = "This is from client.";
 
     struct sockaddr_in c_addr;
+    struct sockaddr_in s_addr;
 
+    memset(&s_addr, 0, sizeof(struct sockaddr_in));
     memset(&c_addr, 0, sizeof(struct sockaddr_in));
 
     // socket
@@ -27,12 +29,20 @@ int main() {
         exit(-1);
     }
 
+    s_addr.sin_family = AF_INET;
+    s_addr.sin_port = htons(8989);
+    inet_aton("localhost", &s_addr.sin_addr);
+
     c_addr.sin_family = AF_INET;
-    c_addr.sin_port = htons(8989);
+    c_addr.sin_port = htons(9955);
     inet_aton("localhost", &c_addr.sin_addr);
 
+    // bind 可以不绑定，系统自动分配
+    //int bind(int socketfd, const struct sockaddr *addr, socklen_t addrlen);
+    bind(c_fd, (struct sockaddr *) &c_addr, sizeof(struct sockaddr_in));
+
     // connect
-    if (connect(c_fd, (struct sockaddr *) &c_addr, sizeof(struct sockaddr_in)) == -1) {
+    if (connect(c_fd, (struct sockaddr *) &s_addr, sizeof(struct sockaddr_in)) == -1) {
         perror("connect fail:");
         exit(-1);
     }

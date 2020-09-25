@@ -37,7 +37,7 @@ int main() {
     s_addr.sin_port = htons(8989);        // 用来将主机字节顺序转换为网络字节顺序
     inet_aton("localhost", &s_addr.sin_addr);  // 转大端
 
-    // bind
+    // bind 如果不绑定，客户端不知道端口
     //int bind(int socketfd, const struct sockaddr *addr, socklen_t addrlen);
     bind(s_fd, (struct sockaddr *) &s_addr, sizeof(struct sockaddr_in));
 
